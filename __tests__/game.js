@@ -2,6 +2,7 @@ import { Game } from "../src/Game";
 import { COMPUTER_MOVE_SYMBOL, USER_MOVE_SYMBOL } from '../constants/moveSymbol';
 import { COMPUTER_NAME, USER_NAME } from '../constants/playerName';
 import { TAKEN_CELL } from '../constants/texts';
+import { jest } from '@jest/globals';
 
 const initialGameBoard = [
     ['', '', ''],

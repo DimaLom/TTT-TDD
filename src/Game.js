@@ -31,8 +31,8 @@ export class Game {
     }
 
     createComputerMove() {
-        const x = Math.floor(Math.random() * (FIELD_SIZE));
-        const y = Math.floor(Math.random() * (FIELD_SIZE));
+        const x = this._getRandomCoordinate();
+        const y = this._getRandomCoordinate();
 
         this._updateHistory(COMPUTER_NAME, x, y);
         this._updateBoard(x, y, {
@@ -55,5 +55,9 @@ export class Game {
 
     _updateHistory(turn, x, y) {
         this._history.push({turn, x, y});
+    }
+
+    _getRandomCoordinate() {
+        return Math.floor(Math.random() * FIELD_SIZE);
     }
 }
