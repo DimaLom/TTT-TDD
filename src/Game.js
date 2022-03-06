@@ -1,5 +1,7 @@
 import { COMPUTER_MOVE_SYMBOL, USER_MOVE_SYMBOL } from '../constants/moveSymbol';
 import { COMPUTER_NAME, USER_NAME } from '../constants/playerName';
+import { FIELD_SIZE } from '../constants/fieldSize';
+import { TAKEN_CELL } from '../constants/texts';
 
 export class Game {
     constructor() {
@@ -9,8 +11,6 @@ export class Game {
             ['', '', '']
         ];
         this._history = [];
-        this._userMoveSymbol = USER_MOVE_SYMBOL;
-        this._computerMoveSymbol = COMPUTER_MOVE_SYMBOL;
     }
 
     getState() {
@@ -23,22 +23,25 @@ export class Game {
 
     acceptUserMove(x, y) {
         if (!this._isCellFree(x, y)) {
-            return this._throwException('cell is already taken');
+            return this._throwException(TAKEN_CELL);
         }
+
         this._updateHistory(USER_NAME, x, y);
         this._updateBoard(x, y);
     }
 
-    createComputerMove(x, y) {
+    createComputerMove() {
+        const x = Math.floor(Math.random() * (FIELD_SIZE));
+        const y = Math.floor(Math.random() * (FIELD_SIZE));
+
         this._updateHistory(COMPUTER_NAME, x, y);
         this._updateBoard(x, y, {
-            symbol: this._computerMoveSymbol
+            symbol: COMPUTER_MOVE_SYMBOL
         });
     }
 
-
     _updateBoard(x, y, config = {}) {
-        const {symbol = this._userMoveSymbol} = config;
+        const {symbol = USER_MOVE_SYMBOL} = config;
         this._board[x][y] = symbol;
     }
 

@@ -1,6 +1,7 @@
 import { Game } from "../src/Game";
 import { COMPUTER_MOVE_SYMBOL, USER_MOVE_SYMBOL } from '../constants/moveSymbol';
 import { COMPUTER_NAME, USER_NAME } from '../constants/playerName';
+import { TAKEN_CELL } from '../constants/texts';
 
 const initialGameBoard = [
     ['', '', ''],
@@ -13,7 +14,6 @@ describe('Game', () => {
     beforeEach(() => {
         game = new Game();
     });
-
 
     test('Should return empty game board', () => {
         const board = game.getState();
@@ -30,22 +30,26 @@ describe('Game', () => {
         expect(board[x][y]).toEqual(USER_MOVE_SYMBOL);
     });
 
+    test('Computer moves in randomly chosen cell', () => {
+        const userMoveSymbol = USER_MOVE_SYMBOL;
+        const computerMoveSymbol = COMPUTER_MOVE_SYMBOL;
+
+        const mock = jest.spyOn(global.Math, 'random').mockReturnValue(0.5);
+
+        game.createComputerMove();
+        const board = game.getState();
+
+        expect(board[1][1]).toEqual(computerMoveSymbol);
+        mock.mockRestore();
+    });
+
     test('Throws an exception if user moves in taken cell', () => {
         const x = 2, y = 2;
 
         game.acceptUserMove(x, y);
         const func = game.acceptUserMove.bind(game, x, y);
 
-        expect(func).toThrow('cell is already taken');
-    });
-
-    test('Computer moves in top left cell', () => {
-        const x = 0, y = 0;
-
-        game.createComputerMove(x, y);
-        const board = game.getState();
-
-        expect(board[x][y]).toEqual(COMPUTER_MOVE_SYMBOL);
+        expect(func).toThrow(TAKEN_CELL);
     });
 
     test('Game saves user\'s move in history', () => {
@@ -58,19 +62,20 @@ describe('Game', () => {
     });
 
     test('Game saves computer\'s move in history', () => {
-        const x = 0, y = 0;
+        const mock = jest.spyOn(global.Math, 'random').mockReturnValue(0.5);
 
-        game.createComputerMove(x, y);
+        game.createComputerMove();
         const history = game.getMoveHistory();
 
-        expect(history).toEqual([{turn: COMPUTER_NAME, x, y}]);
+        expect(history).toEqual([{turn: COMPUTER_NAME, x: 1, y: 1}]);
+        mock.mockRestore();
     });
 
     test('Game saves 1 user\'s move and 1 computer\'s move in history', () => {
         const x = 1, y = 1;
 
         game.acceptUserMove(x, y);
-        game.createComputerMove(0, 0);
+        game.createComputerMove();
         const history = game.getMoveHistory();
 
         expect(history.length).toBe(2);
