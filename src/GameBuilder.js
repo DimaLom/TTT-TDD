@@ -1,0 +1,27 @@
+import { Game } from './Game';
+import { USER_MOVE_SYMBOL } from '../constants/moveSymbol';
+
+export class GameBuilder {
+    constructor() {
+        this.game = new Game();
+    }
+
+    withBoardState(state) {
+        state = state
+            .split('\n')
+            .filter(item => !!item.trim())
+            .map(item => item.trim().split(' '));
+
+        state.forEach((item, i) => {
+            item.forEach((symbol, j) => {
+                if (symbol === USER_MOVE_SYMBOL) this.game.acceptUserMove(i, j);
+            });
+        });
+
+        return this;
+    }
+
+    build() {
+        return this.game;
+    }
+}
