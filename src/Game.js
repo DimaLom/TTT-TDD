@@ -1,15 +1,53 @@
 import { EMPTY_BOARD } from "../constants/emptyBoard";
+import { COMPUTER_MOVE_SYMBOL, USER_MOVE_SYMBOL } from '../constants/moveSymbol';
+import { COMPUTER_NAME } from '../constants/playerName';
 
 export class Game {
     constructor() {
-        this._board = EMPTY_BOARD
+        this._board = EMPTY_BOARD;
+        this._history = [];
+        this._userMoveSymbol = USER_MOVE_SYMBOL;
+        this._computerMoveSymbol = COMPUTER_MOVE_SYMBOL;
     }
 
     getState() {
-        return this._board
+        return this._board;
+    }
+
+    getMoveHistory() {
+        return this._history;
     }
 
     acceptUserMove(x, y) {
-        this._board[0][0] = 'x'
+        if (!this._isCellFree(x, y)) {
+            return this._throwException('cell is already taken');
+        }
+        this._updateHistory(COMPUTER_NAME, x, y);
+        this._updateBoard(x, y);
+    }
+
+    createComputerMove(x, y) {
+        this._updateHistory(COMPUTER_NAME, 0, 0);
+        this._updateBoard(0, 0, {
+            symbol: this._computerMoveSymbol
+        });
+    }
+
+
+    _updateBoard(x, y, config = {}) {
+        const {symbol = this._userMoveSymbol} = config;
+        this._board[x][y] = symbol;
+    }
+
+    _isCellFree(x, y) {
+        return !this._board[x][y];
+    }
+
+    _throwException(msg) {
+        throw new Error(msg);
+    }
+
+    _updateHistory(turn, x, y) {
+        this._history.push({turn, x, y});
     }
 }
